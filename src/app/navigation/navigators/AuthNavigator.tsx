@@ -9,8 +9,10 @@ const Stack = createNativeStackNavigator<AuthNavigatorParamsList>();
 export const AuthNavigator = () => (
   <Stack.Navigator
     initialRouteName={AuthScreen.Splash}
-    mode="modal"
-    headerMode="none">
+    screenOptions={{
+      headerShown: false,
+      presentation: 'modal',
+    }}>
     <Stack.Screen name={AuthScreen.Splash} component={Splash} />
     <Stack.Screen name={AuthScreen.Login} component={Login} />
     <Stack.Screen name={AuthScreen.CreateAccount} component={CreateAccount} />

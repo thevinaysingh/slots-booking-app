@@ -10,8 +10,10 @@ const Stack = createNativeStackNavigator<AppNavigatorParamsList>();
 export const AppNavigator = () => (
   <Stack.Navigator
     initialRouteName={Navigator.AuthNavigator}
-    mode="modal"
-    headerMode="none">
+    screenOptions={{
+      headerShown: false,
+      presentation: 'modal',
+    }}>
     <Stack.Screen name={Navigator.AuthNavigator} component={AuthNavigator} />
     <Stack.Screen
       name={Navigator.DashboardNavigator}
