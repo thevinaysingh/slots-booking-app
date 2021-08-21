@@ -57,7 +57,7 @@ export const Splash: React.FC<{
     try {
       const isLoggedIn = await authRepository.isLoggedIn();
       if (isLoggedIn) {
-        const user = await authRepository.loadUser();
+        // const user = await authRepository.loadUser();
         navigateToDashboard('user.id');
         return;
       }
@@ -75,8 +75,8 @@ export const Splash: React.FC<{
   }, [validateNavigationFlow, localServer]);
 
   React.useEffect(() => {
-    // loadApp();
-  }, [loadApp]);
+    loadApp();
+  }, [loadApp, localServer]);
 
   return (
     <SafeAreaView style={styles.container}>

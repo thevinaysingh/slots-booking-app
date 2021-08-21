@@ -1,1 +1,1 @@
-export * from './characterRepositoryInjectionKey';
+export * from './authRepositoryInjectionKey';
