@@ -1,8 +1,23 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {CreateAccount, Login, Splash} from '../../../features/auth/screens';
 import {AuthScreen} from '../enums/AuthScreen';
 import {AuthNavigatorParamsList} from '../params/AuthNavigatorParamsList';
+
+const Splash = React.lazy(() =>
+  import('../../../features/auth/screens/Splash').then(module => ({
+    default: module.Splash,
+  })),
+);
+const Login = React.lazy(() =>
+  import('../../../features/auth/screens/Login').then(module => ({
+    default: module.Login,
+  })),
+);
+const CreateAccount = React.lazy(() =>
+  import('../../../features/auth/screens/CreateAccount').then(module => ({
+    default: module.CreateAccount,
+  })),
+);
 
 const Stack = createNativeStackNavigator<AuthNavigatorParamsList>();
 

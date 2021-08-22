@@ -1,8 +1,18 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {Dashboard, Profile} from '../../../features/dashboard/screens';
 import {DashboardScreen} from '../enums/DashboardScreen';
 import {DashboardNavigatorParamsList} from '../params/DashboardNavigatorParamsList';
+
+const Dashboard = React.lazy(() =>
+  import('../../../features/dashboard/screens/Dashboard').then(module => ({
+    default: module.Dashboard,
+  })),
+);
+const Profile = React.lazy(() =>
+  import('../../../features/dashboard/screens/Profile').then(module => ({
+    default: module.Profile,
+  })),
+);
 
 const Stack = createNativeStackNavigator<DashboardNavigatorParamsList>();
 
