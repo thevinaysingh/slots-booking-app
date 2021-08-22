@@ -4,21 +4,26 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  LogBox,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {DashboardScreen} from '../../../app/navigation/enums/DashboardScreen';
 import {DashboardNavigatorParamsList} from '../../../app/navigation/params/DashboardNavigatorParamsList';
 import {ButtonRoundedFilled} from '../../../common/components/Button';
 import {HeaderText} from '../../../common/components/HeaderText';
+import {NavigationBar} from '../../../common/components/NavigationBar';
 import {getItemLayout} from '../../../constants/Layout';
 import DependencyContext from '../../../services/di/DependencyContext';
 import {Slot, SlotSection} from '../../../services/server/LocalServer';
 import {SlotListItem, slotListItemHeight} from '../components/SlotListItem';
 import {dashboardRepositoryInjectionKey} from '../injection-keys';
+
+LogBox.ignoreAllLogs();
 
 export const Dashboard: React.FC<{
   navigation: NativeStackNavigationProp<
@@ -45,14 +50,27 @@ export const Dashboard: React.FC<{
       });
   }, [dashboardRepository]);
 
+  const fetchBookedSlots = React.useCallback(() => {
+    dashboardRepository
+      .fetchBookedSlots()
+      .then(slots => {
+        setSelectedSlots([...slots]);
+      })
+      .catch(_error => {
+        // TODO: Handle error
+      });
+  }, [dashboardRepository]);
+
   React.useEffect(() => {
+    fetchBookedSlots();
     fetchSlots();
-  }, [fetchSlots]);
+  }, [fetchSlots, fetchBookedSlots]);
 
   const onBookAppointments = () => {
     dashboardRepository
       .bookAppointments(selectedSlots)
       .then(_booked => {
+        fetchBookedSlots();
         fetchSlots();
         Alert.alert('Success', 'Appointments booked successfully');
       })
@@ -73,13 +91,16 @@ export const Dashboard: React.FC<{
     }
   };
 
+  const onPressProfile = () => {
+    navigation.navigate(DashboardScreen.Profile);
+  };
+
   const renderSectionHeader = ({section: {title}}: {section: SlotSection}) => (
     <Text style={styles.sectionTitle}>{title}</Text>
   );
 
   const renderItem = ({item}: {item: Slot}) => (
     <SlotListItem
-      userId=""
       item={item}
       onPressSlot={onPressSlot}
       selectedSlots={selectedSlots}
@@ -88,19 +109,24 @@ export const Dashboard: React.FC<{
 
   return (
     <SafeAreaView style={styles.container}>
+      <NavigationBar title="Dashboard">
+        <TouchableOpacity style={styles.profileBtn} onPress={onPressProfile}>
+          <Text style={styles.profileBtnText}>Profile</Text>
+        </TouchableOpacity>
+      </NavigationBar>
       <View style={styles.body}>
-        <HeaderText style={styles.bodyHeaderText}>
-          3 Days Appointment List
-        </HeaderText>
         <View style={styles.container}>
           {slotsSection.length === 0 && <ActivityIndicator size="large" />}
           <ScrollView nestedScrollEnabled>
+            <HeaderText style={styles.bodyHeaderText}>
+              3 Days Appointment List
+            </HeaderText>
             {slotsSection.map(section => {
               return (
                 <View key={section.id}>
                   {renderSectionHeader({section})}
                   <FlatList
-                    nestedScrollEnabled
+                    scrollEnabled={false}
                     showsVerticalScrollIndicator={false}
                     data={section.data}
                     numColumns={2}
@@ -132,7 +158,8 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    margin: 20,
+    marginHorizontal: 20,
+    marginBottom: 20,
   },
   bodyHeaderText: {
     fontSize: 24,
@@ -148,6 +175,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
+  },
+  profileBtn: {
+    alignSelf: 'flex-end',
+    paddingHorizontal: 10,
+  },
+  profileBtnText: {
+    fontSize: 16,
+    color: 'black',
   },
   createAccBtn: {
     alignSelf: 'center',

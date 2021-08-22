@@ -30,7 +30,7 @@ export interface Slot {
   duration: number;
   start: number;
   end: number;
-  bookedBy?: string | null;
+  isBooked: boolean;
 }
 
 export interface SlotSection {
@@ -71,8 +71,8 @@ export class LocalServer {
     return Promise.resolve(MockUser);
   }
 
-  async createAccount(user: CreateUser): Promise<void> {
-    return this._localDataSource?.createUser(user);
+  async createAccount(_user: CreateUser): Promise<void> {
+    // TODO:
   }
 
   async isUsernameAvailable(_username: string): Promise<void> {
@@ -83,9 +83,18 @@ export class LocalServer {
     return Promise.resolve(MockUser);
   }
 
-  async fetchSlots(userId: string): Promise<Array<SlotSection>> {
+  async fetchBookedSlots(): Promise<Array<string>> {
     try {
-      const slotsIds = await LocalStorage.getUserSlots(userId);
+      const slotsIds = await LocalStorage.getBookedSlots();
+      return Promise.resolve([slotsIds]);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async fetchSlots(): Promise<Array<SlotSection>> {
+    try {
+      const slotsIds = await LocalStorage.getBookedSlots();
       const startTimeForToday = new Date().setHours(0, 0, 0, 0);
       const sectionsTitle = ['Today', 'Tomorrow', 'Day After Tomorrow'];
       const sectionsLabel = [
@@ -125,7 +134,7 @@ export class LocalServer {
             duration: milliSecondsInASlot,
             start,
             end,
-            bookedBy: slotsIds.includes(slotId) ? userId : null,
+            isBooked: slotsIds.includes(slotId),
           });
         }
 
@@ -138,8 +147,13 @@ export class LocalServer {
     }
   }
 
-  async bookSlots(slotIds: string[], userId: string): Promise<boolean> {
-    await LocalStorage.setUserSlots(userId, slotIds);
-    return Promise.resolve(true);
+  async bookSlots(slotIds: string[]): Promise<boolean> {
+    try {
+      const savedSlotsIds = await LocalStorage.getBookedSlots();
+      await LocalStorage.setBookedSlots([...savedSlotsIds, ...slotIds]);
+      return Promise.resolve(true);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 }

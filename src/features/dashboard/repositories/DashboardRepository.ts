@@ -17,7 +17,17 @@ export class DashboardRepository {
       return Promise.reject('invalid user id');
     }
 
-    return this._localServer?.fetchSlots(userId);
+    return this._localServer?.fetchSlots();
+  }
+
+  async fetchBookedSlots(): Promise<Array<string>> {
+    const userId = this._authRepository?.getUserId();
+
+    if (userId === null) {
+      return Promise.reject('invalid user id');
+    }
+
+    return this._localServer?.fetchBookedSlots();
   }
 
   async bookAppointments(slotIDs: string[]): Promise<boolean> {
@@ -27,6 +37,6 @@ export class DashboardRepository {
       return Promise.reject('invalid user id');
     }
 
-    return this._localServer?.bookSlots(slotIDs, userId);
+    return this._localServer?.bookSlots(slotIDs);
   }
 }

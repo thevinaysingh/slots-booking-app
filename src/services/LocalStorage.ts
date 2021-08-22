@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LocalStorageKeys = {
   AccessToken: 'AccessToken',
+  BookedSlots: 'BookedSlots',
 };
 
 export default class LocalStorage {
@@ -30,11 +31,11 @@ export default class LocalStorage {
     return this.retrieveData(LocalStorageKeys.AccessToken, null);
   };
 
-  static setUserSlots = async (userId: string, slotsIds: string[]) => {
-    await this.storeData(userId, slotsIds);
+  static setBookedSlots = async (slotsIds: string[]) => {
+    await this.storeData(LocalStorageKeys.BookedSlots, slotsIds);
   };
 
-  static getUserSlots = (userId: string) => {
-    return this.retrieveData(userId, []);
+  static getBookedSlots = () => {
+    return this.retrieveData(LocalStorageKeys.BookedSlots, []);
   };
 }

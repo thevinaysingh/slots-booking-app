@@ -1,3 +1,3 @@
-import BackBlackIcon from '../assets/svgs/back-black.svg';
+import BackArrowBlack from '../assets/svgs/back-black.svg';
 
-export {BackBlackIcon};
+export {BackArrowBlack};

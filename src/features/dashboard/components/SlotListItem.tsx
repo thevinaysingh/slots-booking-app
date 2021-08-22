@@ -5,14 +5,12 @@ import {Slot} from '../../../services/server/LocalServer';
 export const slotListItemHeight = 50;
 
 type SlotListItemProps = {
-  userId: string;
   item: Slot;
   onPressSlot: (item: Slot) => void;
   selectedSlots: string[];
 };
 
 export const SlotListItem: React.FC<SlotListItemProps> = ({
-  userId,
   item,
   onPressSlot,
   selectedSlots,
@@ -21,7 +19,7 @@ export const SlotListItem: React.FC<SlotListItemProps> = ({
     onPressSlot(item);
   };
 
-  const isDisabled = item?.bookedBy === userId;
+  const isDisabled = item.isBooked;
   const isSelected = selectedSlots.includes(item.slotId);
 
   return (
@@ -54,6 +52,7 @@ const styles = StyleSheet.create({
   },
   disabledStyle: {
     opacity: 0.5,
+    backgroundColor: 'rgba(10, 132, 255, 1)',
   },
   selectedStyle: {
     backgroundColor: 'rgba(10, 132, 255, 1)',

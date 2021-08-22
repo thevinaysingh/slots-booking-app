@@ -39,17 +39,15 @@ export const Login: React.FC<{
   const onPressLogin = () => {
     authRepository
       .login({loginId: username, password})
-      .then((user: User | undefined | null) => {
+      .then((_user: User | undefined | null) => {
+        // TODO: Handle user id in better way
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
             routes: [
               {
                 name: Navigator.DashboardNavigator,
-                params: {
-                  screen: DashboardScreen.Dashboard,
-                  userId: user?.userId ?? '',
-                },
+                params: {screen: DashboardScreen.Dashboard},
               },
             ],
           }),
@@ -68,15 +66,22 @@ export const Login: React.FC<{
         <HeaderText>Login</HeaderText>
         <InputBox
           editable={false}
+          value={username}
           placeholder="Username"
           onChangeText={setUserName}
         />
         <InputBox
           editable={false}
+          value={password}
+          secureTextEntry
           placeholder="Password (Min 6 chars)"
           onChangeText={setPassword}
         />
-
+        <Text style={styles.instructionText}>
+          Note: Fields are not editable. Above filled fields are used to
+          simulate actual login behavior avoiding discrepancies. Press Login to
+          go.
+        </Text>
         <ButtonRoundedFilled
           disabled={!isLoginEnabled}
           style={styles.btn}
@@ -119,6 +124,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: 'rgba(10, 132, 255, 1)',
+  },
+  instructionText: {
+    fontSize: 16,
+    color: 'grey',
   },
 });
 

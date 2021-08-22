@@ -28,6 +28,7 @@ export class AuthRepository {
 
   async login(loginUser: LoginUser): Promise<User | undefined | null> {
     const user = await this._localServer?.login(loginUser);
+
     if (user === null) {
       return Promise.reject('Something went wrong');
     }
@@ -53,6 +54,7 @@ export class AuthRepository {
     }
 
     const user = await this._localServer?.me();
+
     if (user === null) {
       return Promise.reject('Something went wrong');
     }
@@ -64,6 +66,11 @@ export class AuthRepository {
   async clear(): Promise<void> {
     this._accessToken = null;
     this._user = null;
+  }
+
+  async onLogout(): Promise<void> {
+    this.clear();
+    await LocalStorage.setAccessToken(null);
   }
 
   getAccessToken(): string | null {

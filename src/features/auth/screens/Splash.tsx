@@ -36,29 +36,27 @@ export const Splash: React.FC<{
     );
   }, [navigation]);
 
-  const navigateToDashboard = React.useCallback(
-    (userId: string) => {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            {
-              name: Navigator.DashboardNavigator,
-              params: {screen: DashboardScreen.Dashboard, userId},
-            },
-          ],
-        }),
-      );
-    },
-    [navigation],
-  );
+  const navigateToDashboard = React.useCallback(() => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: Navigator.DashboardNavigator,
+            params: {screen: DashboardScreen.Dashboard},
+          },
+        ],
+      }),
+    );
+  }, [navigation]);
 
   const validateNavigationFlow = React.useCallback(async () => {
     try {
       const isLoggedIn = await authRepository.isLoggedIn();
       if (isLoggedIn) {
-        // const user = await authRepository.loadUser();
-        navigateToDashboard('user.id');
+        await authRepository.me();
+        // TODO: Handle user id in better way
+        navigateToDashboard();
         return;
       }
 
